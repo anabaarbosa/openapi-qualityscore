@@ -1,0 +1,60 @@
+{
+  "name": "@markov/openapi-quality-scorer",
+  "version": "0.1.0",
+  "description": "Get a quality score (0-100) and letter grade (A-F) for your OpenAPI specification with actionable improvement recommendations",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "openapi",
+    "swagger",
+    "api",
+    "linter",
+    "quality",
+    "documentation",
+    "validator",
+    "scoring",
+    "grade",
+    "api-quality",
+    "openapi-linter"
+  ],
+  "author": "Marek V",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarkoVcode/openapi-quality-scorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MarkoVcode/openapi-quality-scorer/issues"
+  },
+  "homepage": "https://github.com/MarkoVcode/openapi-quality-scorer#readme",
+  "dependencies": {
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

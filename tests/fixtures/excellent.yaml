@@ -1,0 +1,366 @@
+openapi: 3.0.3
+info:
+  title: Pet Store API
+  description: |
+    A comprehensive API for managing a pet store inventory.
+    This API allows you to create, read, update, and delete pets,
+    manage inventory, and handle customer orders.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@petstore.example.com
+
+externalDocs:
+  description: Find more info at our developer portal
+  url: https://developer.petstore.example.com
+
+servers:
+  - url: https://api.petstore.example.com/v1
+    description: Production server
+
+tags:
+  - name: pets
+    description: Operations related to pets
+  - name: orders
+    description: Operations related to orders
+
+security:
+  - bearerAuth: []
+
+paths:
+  /pets:
+    get:
+      operationId: listPets
+      summary: List all pets
+      description: Returns a paginated list of all pets in the store.
+      tags:
+        - pets
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of pets to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          example: 10
+        - name: offset
+          in: query
+          description: Number of pets to skip for pagination
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          example: 0
+      responses:
+        "200":
+          description: A list of pets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetList"
+              example:
+                pets:
+                  - id: "pet-123"
+                    name: "Fluffy"
+                    species: "cat"
+                    age: 3
+                total: 1
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    post:
+      operationId: createPet
+      summary: Create a new pet
+      description: Adds a new pet to the store inventory.
+      tags:
+        - pets
+      requestBody:
+        description: Pet data to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePetRequest"
+            example:
+              name: "Buddy"
+              species: "dog"
+              age: 2
+      responses:
+        "201":
+          description: Pet created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+              example:
+                id: "pet-456"
+                name: "Buddy"
+                species: "dog"
+                age: 2
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /pets/{petId}:
+    get:
+      operationId: getPetById
+      summary: Get a pet by ID
+      description: Returns detailed information about a specific pet.
+      tags:
+        - pets
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The unique identifier of the pet
+          schema:
+            type: string
+          example: "pet-123"
+      responses:
+        "200":
+          description: Pet details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+              example:
+                id: "pet-123"
+                name: "Fluffy"
+                species: "cat"
+                age: 3
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    put:
+      operationId: updatePet
+      summary: Update a pet
+      description: Updates an existing pet's information.
+      tags:
+        - pets
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The unique identifier of the pet
+          schema:
+            type: string
+          example: "pet-123"
+      requestBody:
+        description: Updated pet data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePetRequest"
+            example:
+              name: "Fluffy Jr."
+              age: 4
+      responses:
+        "200":
+          description: Pet updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+    delete:
+      operationId: deletePet
+      summary: Delete a pet
+      description: Removes a pet from the store inventory.
+      tags:
+        - pets
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The unique identifier of the pet
+          schema:
+            type: string
+          example: "pet-123"
+      responses:
+        "204":
+          description: Pet deleted successfully
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token-based authentication
+
+  schemas:
+    Pet:
+      type: object
+      description: A pet in the store
+      required:
+        - id
+        - name
+        - species
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the pet
+        name:
+          type: string
+          description: The pet's name
+        species:
+          type: string
+          description: The type of animal
+          enum:
+            - dog
+            - cat
+            - bird
+            - fish
+        age:
+          type: integer
+          description: Age of the pet in years
+          minimum: 0
+      example:
+        id: "pet-123"
+        name: "Fluffy"
+        species: "cat"
+        age: 3
+
+    CreatePetRequest:
+      type: object
+      description: Request body for creating a new pet
+      required:
+        - name
+        - species
+      properties:
+        name:
+          type: string
+          description: The pet's name
+          minLength: 1
+          maxLength: 100
+        species:
+          type: string
+          description: The type of animal
+          enum:
+            - dog
+            - cat
+            - bird
+            - fish
+        age:
+          type: integer
+          description: Age of the pet in years
+          minimum: 0
+      example:
+        name: "Buddy"
+        species: "dog"
+        age: 2
+
+    UpdatePetRequest:
+      type: object
+      description: Request body for updating a pet
+      properties:
+        name:
+          type: string
+          description: The pet's name
+          minLength: 1
+          maxLength: 100
+        age:
+          type: integer
+          description: Age of the pet in years
+          minimum: 0
+      example:
+        name: "Fluffy Jr."
+        age: 4
+
+    PetList:
+      type: object
+      description: A paginated list of pets
+      properties:
+        pets:
+          type: array
+          description: Array of pets
+          items:
+            $ref: "#/components/schemas/Pet"
+        total:
+          type: integer
+          description: Total number of pets
+      example:
+        pets:
+          - id: "pet-123"
+            name: "Fluffy"
+            species: "cat"
+            age: 3
+        total: 1
+
+    Error:
+      type: object
+      description: Error response
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+      example:
+        code: "NOT_FOUND"
+        message: "The requested resource was not found"
+
+  responses:
+    UnauthorizedError:
+      description: Authentication required or token invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "UNAUTHORIZED"
+            message: "Invalid or missing authentication token"
+
+    NotFoundError:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "NOT_FOUND"
+            message: "The requested resource was not found"
+
+    ValidationError:
+      description: Invalid request data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "VALIDATION_ERROR"
+            message: "Request body is invalid"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "INTERNAL_ERROR"
+            message: "An unexpected error occurred"
