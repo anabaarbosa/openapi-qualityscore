@@ -1,8 +1,8 @@
-# @markov/openapi-quality-scorer
+# @codenamemarkov/openapi-quality-scorer
 
 > Get a quality score (0-100) and letter grade (A-F) for your OpenAPI specification
 
-[![npm version](https://badge.fury.io/js/@markov%2Fopenapi-quality-scorer.svg)](https://www.npmjs.com/package/@markov/openapi-quality-scorer)
+[![npm version](https://badge.fury.io/js/@codenamemarkov%2Fopenapi-quality-scorer.svg)](https://www.npmjs.com/package/@codenamemarkov/openapi-quality-scorer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Why This Library?
@@ -24,13 +24,13 @@ Unlike linters (Spectral, Redocly, etc.) that only report pass/fail rules, this 
 ## Installation
 
 ```bash
-npm install @markov/openapi-quality-scorer
+npm install @codenamemarkov/openapi-quality-scorer
 ```
 
 ## Quick Start
 
 ```typescript
-import { analyzeOpenAPISync } from '@markov/openapi-quality-scorer'
+import { analyzeOpenAPISync } from '@codenamemarkov/openapi-quality-scorer'
 
 const spec = {
   openapi: '3.0.0',
@@ -48,7 +48,7 @@ console.log(report.summary)  // "Good API specification with minor areas for imp
 ### Async Version (File/URL Support)
 
 ```typescript
-import { analyzeOpenAPI } from '@markov/openapi-quality-scorer'
+import { analyzeOpenAPI } from '@codenamemarkov/openapi-quality-scorer'
 
 // From file path
 const report = await analyzeOpenAPI('./openapi.yaml')
