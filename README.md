@@ -1,4 +1,4 @@
-# @codenamemarkov/openapi-quality-scorer
+# @anabaarbosaopenapi-quality-score
 
 > Get a quality score (0-100) and letter grade (A-F) for your OpenAPI specification
 
